@@ -176,6 +176,9 @@ public:
             memcpy(reinterpret_cast<char *>(&n_slots), page_data + num_slots_offset, sizeof(int));
             memcpy(reinterpret_cast<char *>(&overflowPointerIndex), page_data + overflow_pointer_offset, sizeof(int));
 
+            // Resize slot directory
+            slot_directory.resize(n_slots);
+
             // Fill slot directory
             int slot_directory_location = overflow_pointer_offset;
             for (int i = 0; i < n_slots; i++) {
@@ -228,6 +231,7 @@ public:
 
                 Record r(record_data);
                 records.push_back(r);
+
             }                
             return true;
         }
@@ -372,7 +376,6 @@ public:
 
             indexFile.close();
         }
-        cout << nextFreePage << endl;
         // Close the CSV file
         csvFile.close();
     }
@@ -408,9 +411,8 @@ public:
             // If not found in this page, see if overflow exists and it will continue to check pages until no more overflow pages exist
             pageIndex = page.overflowPointerIndex;
         }
-
-
-        cout << "Emp not found with id" << id << endl;
+        
+        cout << "Emp not found with id " << id << endl;
 
         // Close the index file
         indexFile.close();
